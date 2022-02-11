@@ -19,7 +19,7 @@ from kivy.uix.textinput import TextInput
 class MainApp(App):
     def build(self):
         self.operators = ["/", "*", "+", "-"]
-        self.last_was_operator = None
+        self.last_was_operator = False
         self.last_button = None
         main_layout = BoxLayout(orientation="vertical")
         self.solution = TextInput(
@@ -59,16 +59,12 @@ class MainApp(App):
             # Clear the solution widget
             self.solution.text = ""
         else:
-            if current and (
-                self_last_was_operator and button_text in self.operators):
-                # Don't add two operaters right after each other
-                return
-            elif current == "" and button_text in self.operators:
-                # First character cannot be an operator
-                return
-            else:
-                new_text = current + button_text
-                self.solution.text = new_text
+            if current:
+                for o in self.operators:
+                    if current[-1] == o and button_text == o:
+                        return
+            new_text = current + button_text
+            self.solution.text = new_text
         self.last_button = button_text
         self.last_was_operator = self.last_button in self.operators
 
